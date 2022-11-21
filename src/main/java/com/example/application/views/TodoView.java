@@ -20,10 +20,11 @@ public class TodoView extends VerticalLayout {
     List<Todo> todos = new ArrayList<>();
     VirtualList<Todo> list = new VirtualList<>();
 
+    static record Todo(String task, boolean done){};
     TodoView() {
         var task = new TextField();
         var button = new Button("Add", click-> {
-            todos.add(new Todo(task.getValue()));
+            todos.add(new Todo(task.getValue(), false));
             task.clear();
             refreshList();
         });
@@ -38,21 +39,24 @@ public class TodoView extends VerticalLayout {
         list.setItems(todos);
     }
 
+    void updateStatus(Todo todo, boolean done) {
+        todos.set(todos.indexOf(todo), new Todo(todo.task, done));
+        refreshList();
+    }
+
     class TodoLayout extends HorizontalLayout {
         TodoLayout(Todo todo){
-            var done = new Checkbox(todo.isDone());
+            var done = new Checkbox(todo.done);
             var delete = new Button("Delete");
 
-            done.addValueChangeListener(v -> {
-                todo.setDone(v.getValue());
-            });
+            done.addValueChangeListener(v -> updateStatus(todo, v.getValue()));
             delete.addThemeVariants(ButtonVariant.LUMO_TERTIARY, ButtonVariant.LUMO_ERROR);
             delete.addClickListener(click -> {
                 todos.remove(todo);
                 refreshList();
             });
 
-            add(done, new Span(todo.getTask()), delete);
+            add(done, new Span(todo.task), delete);
             setAlignItems(Alignment.CENTER);
         }
     }

@@ -1,5 +1,7 @@
 package com.example.application.views;
 
+import java.util.ArrayList;
+import java.util.List;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
@@ -12,18 +14,17 @@ import com.vaadin.flow.component.virtuallist.VirtualList;
 import com.vaadin.flow.data.renderer.ComponentRenderer;
 import com.vaadin.flow.router.Route;
 
-import java.util.ArrayList;
-import java.util.List;
-
 @Route("")
 public class TodoView extends VerticalLayout {
     List<Todo> todos = new ArrayList<>();
     VirtualList<Todo> list = new VirtualList<>();
 
-    static record Todo(String task, boolean done){};
+    static record Todo(String task, boolean done) {
+    };
+
     TodoView() {
         var task = new TextField();
-        var button = new Button("Add", click-> {
+        var button = new Button("Add", click -> {
             todos.add(new Todo(task.getValue(), false));
             task.clear();
             refreshList();
@@ -45,7 +46,7 @@ public class TodoView extends VerticalLayout {
     }
 
     class TodoLayout extends HorizontalLayout {
-        TodoLayout(Todo todo){
+        TodoLayout(Todo todo) {
             var done = new Checkbox(todo.done);
             var delete = new Button("Delete");
 
